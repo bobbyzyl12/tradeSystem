@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mysystem.dao.MarketDepthDetailDao">
+	<resultMap type="MarketDepthDetail" id="marketDepthDetailMap">
+		<result column="marketDepthDetailId" property="marketDepthDetailId"/>
+		<result column="marketDepthId" property="marketDepthId"/>
+		<result column="brokerCompanyId" property="brokerCompanyId"/>
+		<result column="price" property="price"/>
+		<result column="quantity" property="quantity"/>
+		<result column="ifBuy" property="ifBuy"/>
+	</resultMap>
+	
+	<select id="findMarketDepthDetailByProductID" parameterType="MarketDepthDetail" resultType="marketDepthDetail">
+		select * from marketdepthdetail where marketDepthId=#{marketDepthId} and price=#{price} and ifBuy=#{ifBuy}
+	</select>
+	
+	<select id="findMaxBuy" parameterType="Integer" resultType="Float">
+		select MAX(price) from marketdepthdetail where marketDepthId=#{marketDepthId} and ifBuy=1
+	</select>
+	
+	<select id="findMinSell" parameterType="Integer" resultType="Float">
+		select MIN(price) from marketdepthdetail where marketDepthId=#{marketDepthId} and ifBuy=0
+	</select>
+	
+	<select id="findDetailByMarketDepthId" parameterType="Integer" resultMap="marketDepthDetailMap">
+		select * from marketdepthdetail where marketDepthId=#{marketDepthId}
+	</select>
+	
+	<insert id="addMarketDepthDetail" useGeneratedKeys="true" keyProperty="marketDepthDetailId" parameterType="MarketDepthDetail">
+		insert into marketdepthdetail
+		(marketDepthDetailId,marketDepthId,brokerCompanyId,price,quantity,ifBuy) 
+		values
+		(null,#{marketDepthId},#{brokerCompanyId},#{price},#{quantity},#{ifBuy})
+	</insert>
+	
+	<update id="editMarketDepthDetail" parameterType="MarketDepthDetail">
+		update marketdepthdetail set quantity=#{quantity}
+		where marketDepthDetailId=#{marketDepthDetailId}
+	</update>
+	
+	
+	<delete id="deleteAllByMarketDepthId" parameterType="Integer">
+        delete from marketdepthdetail where marketDepthId=#{marketDepthId}
+    </delete>
+    
+    <delete id="deleteMarketDepthDetail" parameterType="Integer">
+        delete from marketdepthdetail where marketDepthDetailId=#{marketDepthDetailId}
+    </delete>
+</mapper>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 账户申请信息Dao层的实现 -->
+<mapper namespace="com.mysystem.dao.BrokerDao">
+	<!-- 账户申请信息结果集 -->
+	<resultMap type="Broker" id="brokerMap">
+		<id column="brokerId" property="brokerId"/>
+		<result column="brokerName" property="brokerName"/>
+		<result column="identifyNumber" property="identifyNumber"/>
+		<result column="loginName" property="loginName"/>
+		<result column="password" property="password"/>
+		<result column="status" property="status"/>
+	</resultMap>
+	
+	<!-- 通过用户名查找账户 -->
+	<select id="findByBrokername" parameterType="String" resultType="Broker">
+		select * from broker where brokerName = #{brokerName}
+	</select>
+	
+	<select id="findByLoginname" parameterType="String" resultType="Broker">
+		select * from broker where loginName = #{loginName}
+	</select>
+	
+	<!-- 通过uitd获取账户申请信息 -->
+	<select id="findByBrokerid" parameterType="Integer" resultType="Broker">
+		select * from broker where brokerId = #{brokerId}
+	</select>
+	
+	
+	<insert id="register" parameterType="Broker"> 
+	insert into broker (brokerName,identifyNumber,LoginName,password,status) 
+	values(#{brokerName},#{identifyNumber},#{loginName},#{password},'0') 
+	</insert>
+	
+</mapper>

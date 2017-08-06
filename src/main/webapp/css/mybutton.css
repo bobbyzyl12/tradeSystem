@@ -1,0 +1,42 @@
+.search-button{
+	box-shadow: none;
+    float: left;
+    font-size: 14px;
+    height: 35px;
+    margin: 7px 0 0 10px;
+    padding: 7px;
+    width: 100px;
+    display: block;
+    line-height: 1.42857143;
+    color: #66DEB3;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #66DEB3;
+    border-radius: 4px;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+
+.search-button:hover{
+	background-color: #66DEB3;
+	color: #fff;
+}
+
+.detail-button{
+ 		border-radius:4px;
+ 		color:#65CEA7;
+    	border:1px solid #65CEA7;
+    	background:#fff;
+    	margin-right:8px;
+    	text-align:center;
+    	width:85px;
+    	height:28px;
+    	line-height: 8px;
+    	margin-top:3px;
+    	outline:0;
+}
+ 	
+.detail-button:hover{
+ 		border:1px solid #65CEA7;
+ 		background:#65CEA7;
+ 		color:#fff;
+ 	}

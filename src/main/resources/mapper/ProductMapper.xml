@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mysystem.dao.ProductDao">
+	<resultMap type="Product" id="productMap">
+		<result column="tProductId" property="tProductId"/>
+		<result column="bProductId" property="bProductId"/>
+		<result column="brokerCompanyId" property="brokerCompanyId"/>
+		<result column="ProductName" property="ProductName"/>
+		<result column="status" property="status"/>
+	</resultMap>
+	
+	<select id="findAllProductByBrokerCompanyID" parameterType="Integer" resultMap="productMap">
+		select * from product where brokerCompanyId=#{brokerCompanyId} and status = 0
+	</select>
+	
+</mapper>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mysystem.dao.OrderDao">
+	<resultMap type="Orders" id="orderMap">
+		<result column="traderOrderId" property="traderOrderId"/>
+		<result column="brokerOrderId" property="brokerOrderId"/>
+		<result column="traderId" property="traderId"/>
+		<result column="brokerCompanyId" property="brokerCompanyId"/>
+		<result column="brokerCompanyName" property="brokerCompanyName"/>
+		<result column="traderCompanyName" property="traderCompanyName"/>
+		<result column="orderType" property="orderType"/>
+		<result column="bProductId" property="bProductId"/>
+		<result column="ifBuy" property="ifBuy"/>
+		<result column="targetNumber" property="targetNumber"/>
+		<result column="completeNumber" property="completeNumber"/>
+		<result column="status" property="status"/>
+		<result column="startTime" property="startTime"/>
+		<result column="completeTime" property="completeTime"/>
+		<result column="setPrice" property="setPrice"/>
+		<result column="alarmPrice" property="alarmPrice"/>
+	</resultMap>
+	
+	<resultMap type="OrderDetail" id="orderDetailMap">
+		<result column="orderDetailId" property="orderDetailId"/>
+		<result column="traderOrderId" property="traderOrderId"/>
+		<result column="brokerOrderId" property="brokerOrderId"/>
+		<result column="otherSideBrokerOrderId" property="otherSideBrokerOrderId"/>
+		<result column="amount" property="amount"/>
+		<result column="price" property="price"/>
+		<result column="time" property="time"/>
+	</resultMap>
+	
+	<insert id="addOrder" useGeneratedKeys="true" keyProperty="brokerOrderId" parameterType="Orders">
+		<selectKey keyProperty="brokerOrderId" order="AFTER" resultType="Integer">
+            select LAST_INSERT_ID()
+        </selectKey>
+		insert into orders
+		(traderOrderId,brokerOrderId,traderId,brokerCompanyId,traderCompanyName,brokerCompanyName,
+		orderType,bProductId,ifBuy,targetNumber,completeNumber,
+		status,startTime,completeTime,setPrice,alarmPrice) 
+		values
+		(#{traderOrderId},null,#{traderId},#{brokerCompanyId},#{traderCompanyName},#{brokerCompanyName},
+		#{orderType},#{bProductId},#{ifBuy},#{targetNumber},0,
+		#{status},#{startTime},#{completeTime},#{setPrice},#{alarmPrice})
+	</insert>
+	
+	<insert id="addOrderDetail" useGeneratedKeys="true" keyProperty="orderDetailId" parameterType="OrderDetail">
+		insert into orderdetail
+		(orderDetailId,traderOrderId,brokerOrderId,otherSideBrokerOrderId,amount,price,time) 
+		values
+		(null,#{traderOrderId},#{brokerOrderId},#{otherSideBrokerOrderId},#{amount},#{price},#{time})
+	</insert>
+	
+	<select id="findAllUndoneOrdersByBrokerCompanyID" parameterType="Integer" resultMap="orderMap">
+		select * from orders where brokerCompanyId=#{brokerCompanyId} and (status = 1 or status = 0)
+	</select>
+	
+	<select id="findOrderByID" parameterType="Integer" resultType="Orders">
+		select * from orders where brokerOrderId=#{brokerOrderId}
+	</select>
+	
+	<select id="findAllSellOrderByProductID" parameterType="Orders" resultMap="orderMap">
+		select * from orders 
+		where ifBuy = 0 and bProductId=#{bProductId} and setPrice&lt;=#{setPrice} and (status = 1 or status = 0) and (orderType=0 or orderType=1) and brokerCompanyId=#{brokerCompanyId}
+		order by setPrice,startTime
+	</select>
+	
+	<select id="findAllBuyOrderByProductID" parameterType="Orders" resultMap="orderMap">
+		select * from orders 
+		where ifBuy = 1 and bProductId=#{bProductId} and setPrice&gt;=#{setPrice} and 
+			(status = 1 or status = 0) and (orderType=0 or orderType=1) and brokerCompanyId=#{brokerCompanyId}
+		order by setPrice DESC,startTime
+	</select>
+	
+	<select id="findStopSellOrder" parameterType="Orders" resultMap="orderMap">
+		select * from orders 
+		where ifBuy = 0 and bProductId=#{bProductId} and alarmPrice&gt;=#{setPrice} and 
+			(status = 1 or status = 0) and (orderType=2) and brokerCompanyId=#{brokerCompanyId}
+		order by setPrice,startTime
+	</select>
+	
+	<select id="findStopBuyOrder" parameterType="Orders" resultMap="orderMap">
+		select * from orders 
+		where ifBuy = 1 and bProductId=#{bProductId} and alarmPrice&lt;=#{setPrice} and 
+			(status = 1 or status = 0) and (orderType=2) and brokerCompanyId=#{brokerCompanyId}
+		order by setPrice DESC,startTime
+	</select>
+	
+	<update id="cancelOrder" parameterType="Orders">
+		update orders set status = 3, orderType = 3 ,completeTime=#{completeTime}
+		where brokerOrderId=#{brokerOrderId}
+	</update>
+	
+	<update id="updateOrder" parameterType="Orders">
+		update orders set completeNumber=#{completeNumber},status=#{status},completeTime=#{completeTime}
+		where brokerOrderId=#{brokerOrderId}
+	</update>
+	
+	<select id="findAllCount"  parameterType="PageModel" resultType="Integer">
+		select count(*) from orders
+		where  brokerCompanyId=#{brokerCompanyId}
+	</select>
+	
+	<select id="findByBrokerCompanyId" parameterType="PageModel" resultMap="orderMap">
+		select * from orders
+		where brokerCompanyId=#{brokerCompanyId}
+		limit #{pagestart},#{pagesize}
+	</select>
+	
+	<select id="findDetailByOrderId" parameterType="Integer" resultMap="orderDetailMap">
+		select * from OrderDetail
+		 where brokerOrderId=#{orderId}
+	</select>
+		<select id="findPendingOrderByBrokerCompanyId" parameterType="PageModel" resultMap="orderMap">
+		select * from orders
+		where brokerCompanyId=#{brokerCompanyId} and (status=0 or status =1)
+		limit #{pagestart},#{pagesize}
+	</select>
+	
+	<select id="findCompletedOrderByBrokerCompanyId" parameterType="PageModel" resultMap="orderMap">
+		select * from orders
+		where brokerCompanyId=#{brokerCompanyId} and (status=2 or status =3)
+		limit #{pagestart},#{pagesize}
+	</select>
+	
+	<select id="findAllPendingCount"  parameterType="PageModel" resultType="Integer">
+		select count(*) from orders
+		where  brokerCompanyId=#{brokerCompanyId} and (status=0 or status =1)
+	</select>
+	
+	<select id="findAllCompletedCount"  parameterType="PageModel" resultType="Integer">
+		select count(*) from orders
+		where  brokerCompanyId=#{brokerCompanyId} and (status=0 or status =1)
+	</select>
+	
+</mapper>
