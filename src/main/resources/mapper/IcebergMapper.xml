@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mysystem.dao.IcebergDao">
+	<resultMap type="com.mysystem.entity.Iceberg" id="icebergMap">
+		<result column="icebergId" property="icebergId"/>
+		<result column="traderorderId" property="traderorderId"/>
+	</resultMap>
+	
+	<select id="FindByOrder" parameterType="Integer" resultType="Integer">
+		select icebergId from iceberg where traderorderId = #{traderorderId}
+	</select>
+	
+	<select id="FindByIceberg" parameterType="Integer" resultMap="icebergMap">
+		select * from iceberg where icebergId = #{icebergId}
+	</select>
+	
+	<insert id="AddIceberg" parameterType="com.mysystem.entity.Iceberg">
+		insert into iceberg(icebergId, traderorderId)
+				values(#{icebergId},#{traderorderId})
+	</insert>
+</mapper>

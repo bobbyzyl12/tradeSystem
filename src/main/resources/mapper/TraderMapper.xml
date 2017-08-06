@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 账户申请信息Dao层的实现 -->
+<mapper namespace="com.mysystem.dao.TraderDao">
+	<!-- 账户申请信息结果集 -->
+	<resultMap type="com.mysystem.entity.Trader" id="traderMap">
+		<id column="traderId" property="traderId"/>
+		<result column="traderName" property="traderName"/>
+		<result column="identifyNumber" property="identifyNumber"/>
+		<result column="loginName" property="loginName"/>
+		<result column="password" property="password"/>
+		<result column="status" property="status"/>
+	</resultMap>
+	
+	<!-- 通过用户名查找账户 -->
+	<select id="findByTradername" parameterType="String" resultType="com.mysystem.entity.Trader">
+		select * from trader where traderName = #{traderName}
+	</select>
+	
+	<select id="findByLoginname" parameterType="String" resultType="com.mysystem.entity.Trader">
+		select * from trader where loginName = #{loginName}
+	</select>
+	
+	<!-- 通过uitd获取账户申请信息 -->
+	<select id="findByTraderid" parameterType="Integer" resultType="com.mysystem.entity.Trader">
+		select * from trader where traderId = #{traderId}
+	</select>
+	
+	<update id="editTrader" parameterType="Trader">
+	update trader set password=#{password} where traderId=#{traderId} 
+	</update>
+	
+	<insert id="register" parameterType="Trader"> 
+	insert into trader (traderName,identifyNumber,LoginName,password,status) 
+	values(#{traderName},#{identifyNumber},#{loginName},#{password},'0') 
+	</insert>
+	
+</mapper>

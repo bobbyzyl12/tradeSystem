@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mysystem.dao.OrderDetailDao">
+	<resultMap type="com.mysystem.entity.OrderDetail" id="orderDetailMap">
+		<result column="orderDetailId" property="orderDetailId"/>
+		<result column="traderOrderId" property="traderOrderId"/>
+		<result column="brokerOrderId" property="brokerOrderId"/>
+		<result column="otherSideBrokerOrderId" property="otherSideBrokerOrderId"/>
+		<result column="amount" property="amount"/>
+		<result column="price" property="price"/>
+		<result column="time" property="time"/>
+	</resultMap>
+	
+	<select id="CountByOrderId"  resultType="Integer">
+		select count(*) from OrderDetail
+		where traderOrderId=#{traderOrderId}
+	</select>
+	
+	<select id="FindByOrderId" parameterType="com.mysystem.entity.PageModel" resultMap="orderDetailMap">
+		select * from OrderDetail
+		 where traderOrderId=#{orderId}
+		limit #{pagestart},#{pagesize}
+	</select>
+	
+	<select id="FindByOrderId2" resultMap="orderDetailMap">
+		select * from OrderDetail
+		 where traderOrderId=#{orderId} 
+	</select>
+	
+	<insert id="AddOrderDetail" parameterType="com.mysystem.entity.OrderDetail">
+		insert into OrderDetail(orderDetailId, traderOrderId,
+								brokerOrderId,otherSideBrokerOrderId
+								amount,price,time)
+				values(#{orderDetailId},#{traderOrderId},
+					   #{brokerOrderId},#{otherSideBrokerOrderId}
+					   #{amount},#{price},#{time})
+	</insert>
+	
+</mapper>

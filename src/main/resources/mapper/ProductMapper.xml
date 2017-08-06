@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mysystem.dao.ProductDao">
+	<resultMap type="com.mysystem.entity.Product" id="productMap">
+		<id column="tProductId" property="tProductId"/>
+		<result column="bProductId" property="bProductId"/>
+		<result column="productName" property="productName"/>
+		<result column="status" property="status"/>
+	</resultMap>
+	
+	<select id="findByBrokerCompanyId" parameterType="Integer" resultMap="productMap">
+		select * from Product 
+		where brokerCompanyId= #{id}
+	</select>
+	
+	<update id="UpdateProduct" parameterType="Integer">
+		update product 
+		set productName=#{productName}, status=#{status}
+		where bProductId=#{bProductId} and brokerCompanyId=#{brokerCompanyId}
+	</update>
+	
+	<insert id="AddProduct" parameterType="com.mysystem.entity.Product">
+		insert into Product(bProductId, brokerCompanyId, ProductName, status)
+		values(#{bProductId},#{brokerCompanyId},#{ProductName},#{status})
+	</insert>
+</mapper>

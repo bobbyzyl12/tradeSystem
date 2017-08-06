@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mysystem.dao.MarketDepthDetailDao">
+	<resultMap type="MarketDepthDetail" id="marketDepthDetailMap">
+		<result column="marketDepthDetailId" property="marketDepthDetailId"/>
+		<result column="marketDepthId" property="marketDepthId"/>
+		<result column="brokerCompanyId" property="brokerCompanyId"/>
+		<result column="price" property="price"/>
+		<result column="quantity" property="quantity"/>
+		<result column="ifBuy" property="ifBuy"/>
+	</resultMap>
+	
+	<select id="findMarketDepthDetail" parameterType="com.mysystem.entity.MarketDepth" resultMap="marketDepthDetailMap">
+		select * from marketdepthdetail 
+		where brokerCompanyId=#{brokerCompanyId} and marketDepthId=#{marketDepthId}
+	</select>
+	
+	<select id="findMarketDepthDetail2" parameterType="com.mysystem.entity.MarketDepth" resultType="marketDepthDetail">
+		select * from marketdepthdetail 
+		where brokerCompanyId=#{brokerCompanyId} and marketDepthDetailId=#{marketDepthDetailId}
+	</select>
+	
+	<insert id="addMarketDepthDetail" parameterType="MarketDepthDetail">
+		insert into marketdepthdetail
+		(marketDepthDetailId,marketDepthId,
+		brokerCompanyId,price,quantity,ifBuy) 
+		values
+		(#{marketDepthDetailId},#{marketDepthId},
+		#{brokerCompanyId},#{price},#{quantity},#{ifBuy})
+	</insert>
+	
+	<update id="editMarketDepthDetail" parameterType="MarketDepthDetail">
+		update marketdepthdetail 
+		set quantity=#{quantity}
+		where marketDepthDetailId=#{marketDepthDetailId} and brokerCompanyId=#{brokerCompanyId}
+	</update>
+    
+    <delete id="deleteMarketDepthDetail" parameterType="MarketDepthDetail">
+        delete from marketdepthdetail 
+        where marketDepthDetailId=#{marketDepthDetailId} and brokerCompanyId=#{brokerCompanyId}
+    </delete>
+</mapper>

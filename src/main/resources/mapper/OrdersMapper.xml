@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mysystem.dao.OrdersDao">
+	<resultMap type="com.mysystem.entity.Orders" id="ordersMap">
+		<id column="traderOrderId" property="traderOrderId"/>
+		<result column="brokerOrderId" property="brokerOrderId"/>
+		<result column="traderId" property="traderId"/>
+		<result column="brokerCompanyId" property="brokerCompanyId"/>
+		<result column="brokerCompanyName" property="brokerCompanyName"/>
+		<result column="orderType" property="orderType"/>
+		<result column="bProductId" property="bProductId"/>
+		<result column="productName" property="productName"/>
+		<result column="ifBuy" property="ifBuy"/>
+		<result column="targetNumber" property="targetNumber"/>
+		<result column="completeNumber" property="completeNumber"/>
+		<result column="status" property="status"/>
+		<result column="startTime" property="startTime"/>
+		<result column="completeTime" property="completeTime"/>
+		<result column="setPrice" property="setPrice"/>
+		<result column="alarmPrice" property="alarmPrice"/>
+	</resultMap>
+	
+	<select id="CountAll"  parameterType="com.mysystem.entity.PageModel" resultType="Integer">
+		select count(*) from Orders
+		where  traderId=#{traderId} and status=#{status}
+	</select>
+	
+	
+	<select id="FindByTraderId" parameterType="com.mysystem.entity.PageModel" resultMap="ordersMap">
+		select * from Orders
+		where traderId=#{traderId} and status=#{status}
+		limit #{pagestart},#{pagesize}
+	</select>
+	
+	<select id="FindByTraderOrderId" parameterType="Integer" resultType="com.mysystem.entity.Orders">
+		select * from Orders where traderOrderId = #{id}
+	</select>
+	
+	<update id="CancelOrders" parameterType="Integer">
+		update Orders
+		set orderType=3,status=3
+		 where traderOrderId=#{id}
+	</update>
+	
+	<update id="CancelOrders2" parameterType="Integer">
+		update Orders
+		set orderType=3,status=7
+		 where traderOrderId=#{id}
+	</update>
+	
+	<update id="UpdateOrders" parameterType="com.mysystem.entity.Orders">
+		update Orders
+		set completeNumber=#{completeNumber},status=#{status}
+		 where traderOrderId=#{traderOrderId}
+	</update>
+	
+	<update id="UpdateOrders2" parameterType="com.mysystem.entity.Orders">
+		update Orders
+		set brokerOrderId=#{brokerOrderId}
+		 where traderOrderId=#{traderOrderId}
+	</update>
+	
+	<update id="UpdateOrders3" parameterType="com.mysystem.entity.Orders">
+		update Orders
+		set completeNumber=#{completeNumber},status=#{status},completeTime=#{completeTime}
+		 where traderOrderId=#{traderOrderId}
+	</update>
+	
+	<insert id="AddOrders" parameterType="com.mysystem.entity.Orders">
+		<selectKey keyProperty="traderOrderId" order="AFTER" resultType="java.lang.Integer">  
+            <!-- SELECT LAST_INSERT_ID()：得到刚insert到数据表中的记录的主键值，只适用于自增主键 -->  
+            SELECT LAST_INSERT_ID()  
+        </selectKey>  
+		insert into Orders(traderId, brokerCompanyId,brokerOrderId,brokerCompanyName,orderType,
+							bProductId,productName, ifBuy,targetNumber,
+							status,startTime,setPrice,alarmPrice)
+				values(#{traderId},#{brokerCompanyId},#{brokerOrderId},#{brokerCompanyName},#{orderType},
+							#{bProductId},#{productName},#{ifBuy},
+							#{targetNumber},#{status},
+							#{startTime},#{setPrice},#{alarmPrice})
+	</insert>
+</mapper>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mysystem.dao.BrokerCompanyDao">
+	<resultMap type="com.mysystem.entity.BrokerCompany" id="brokerCompanyMap">
+		<id column="brokerCompanyId" property="brokerCompanyId"/>
+		<result column="brokerCompanyName" property="brokerCompanyName"/>
+		<result column="brokerCompanyAddress" property="brokerCompanyAddress"/>
+		<result column="brokerCompanyPhoneNum" property="brokerCompanyPhoneNum"/>
+		<result column="ipaddress" property="ipaddress"/>
+		<result column="status" property="status"/>
+	</resultMap>
+	
+	<select id="countAll"  resultType="Integer">
+		select count(*) from brokerCompany 
+	</select>
+	
+	<select id="findAllBrokerCompany" parameterType="com.mysystem.entity.PageModel" resultMap="brokerCompanyMap">
+		select * from brokerCompany 
+		limit #{pagestart},#{pagesize}
+	</select>
+	
+	<select id="findAllBrokerCompany2" resultMap="brokerCompanyMap">
+		select * from brokerCompany 
+	</select>
+	
+	<select id="FindBrokerCompanyByid" parameterType="Integer" resultType="com.mysystem.entity.BrokerCompany">
+		select * from trader where brokerCompanyId = #{id}
+	</select>
+</mapper>
